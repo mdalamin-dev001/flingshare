@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>FlingShare</title>
 <meta name="theme-color" content="#2547F5">
+<meta name="color-scheme" content="light dark">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon.svg">
 <link rel="stylesheet" href="style.css">
@@ -13,39 +14,60 @@
 <main id="app">
   <header>
     <img src="icon.svg" alt="" width="44" height="44">
-    <div><h1>FlingShare</h1><p>Files go straight to the other device. Nothing is uploaded.</p></div>
+    <div><h1>FlingShare</h1><p data-t="tagline"></p></div>
+    <button id="lang" class="lang" aria-label="Language">বাং</button>
   </header>
 
+  <ol id="steps" class="steps" hidden>
+    <li><i>1</i><span data-t="stCode"></span></li>
+    <li><i>2</i><span data-t="stConnect"></span></li>
+    <li><i>3</i><span data-t="stTransfer"></span></li>
+  </ol>
+
   <section id="home" class="view active">
-    <button id="btnSend" class="big primary"><b>Send</b><span>Show a code for the other device</span></button>
-    <button id="btnRecv" class="big"><b>Receive</b><span>Enter a code or scan a QR</span></button>
-    <p class="note">Works best when both devices are on the same Wi-Fi.</p>
+    <button id="btnSend" class="big primary"><b data-t="send"></b><span data-t="sendSub"></span></button>
+    <button id="btnRecv" class="big"><b data-t="recv"></b><span data-t="recvSub"></span></button>
+    <h3 class="sub" data-t="how"></h3>
+    <ol class="how">
+      <li data-t="h1"></li>
+      <li data-t="h2"></li>
+      <li data-t="h3"></li>
+    </ol>
+    <p class="note" data-t="wifi"></p>
   </section>
 
   <section id="sendView" class="view">
-    <button class="back" data-back>Back</button>
-    <h2>Share this code</h2>
+    <button class="back" data-back data-t="back"></button>
+    <h2 data-t="shareCode"></h2>
     <div id="codeTiles" class="tiles"></div>
     <div id="qr" class="qr"></div>
-    <p id="sendStatus" class="status">Waiting for the other device…</p>
-    <button id="btnShare" class="soft">Share link</button>
+    <p id="sendStatus" class="status"></p>
+    <div class="keep" data-t="keepSend"></div>
+    <button id="btnShare" class="soft" data-t="shareLink"></button>
+    <button id="retrySend" class="soft" data-t="retry" hidden></button>
   </section>
 
   <section id="recvView" class="view">
-    <button class="back" data-back>Back</button>
-    <h2>Enter the code</h2>
+    <button class="back" data-back data-t="back"></button>
+    <h2 data-t="enterCode"></h2>
     <input id="codeInput" inputmode="numeric" maxlength="6" placeholder="000000" autocomplete="off">
     <p id="recvError" class="error"></p>
-    <button id="btnJoin" class="big primary center"><b>Connect</b></button>
-    <p class="note">Or scan the sender’s QR code with your camera.</p>
+    <button id="btnJoin" class="big primary center"><b data-t="connect"></b></button>
+    <p class="note" data-t="orScan"></p>
   </section>
 
   <section id="xferView" class="view">
-    <button class="back" data-back>Disconnect</button>
-    <div id="chip" class="chip">Connecting…</div>
-    <button id="btnPick" class="big primary center" disabled><b>Choose files</b><span>Photos, videos, APKs, ZIPs, anything</span></button>
+    <button class="back" data-back data-t="disconnect"></button>
+    <div id="chip" class="chip"></div>
+    <div class="keep strong" data-t="keepXfer"></div>
+    <button id="btnPick" class="big primary center" disabled><b data-t="choose"></b><span data-t="chooseSub"></span></button>
+    <button id="retry" class="soft" data-t="retry" hidden></button>
+    <div id="done" class="doneBox" data-t="allDone" hidden></div>
+    <p id="empty" class="note center-text" data-t="idle" hidden></p>
+    <p id="summary" class="summary"></p>
     <ul id="list"></ul>
   </section>
+  <div id="toast" class="toast" hidden></div>
 </main>
 <input type="file" id="picker" multiple hidden>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
