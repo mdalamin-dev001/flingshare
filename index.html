@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>FlingShare</title>
+<meta name="theme-color" content="#2547F5">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main id="app">
+  <header>
+    <img src="icon.svg" alt="" width="44" height="44">
+    <div><h1>FlingShare</h1><p>Files go straight to the other device. Nothing is uploaded.</p></div>
+  </header>
+
+  <section id="home" class="view active">
+    <button id="btnSend" class="big primary"><b>Send</b><span>Show a code for the other device</span></button>
+    <button id="btnRecv" class="big"><b>Receive</b><span>Enter a code or scan a QR</span></button>
+    <p class="note">Works best when both devices are on the same Wi-Fi.</p>
+  </section>
+
+  <section id="sendView" class="view">
+    <button class="back" data-back>Back</button>
+    <h2>Share this code</h2>
+    <div id="codeTiles" class="tiles"></div>
+    <div id="qr" class="qr"></div>
+    <p id="sendStatus" class="status">Waiting for the other device…</p>
+    <button id="btnShare" class="soft">Share link</button>
+  </section>
+
+  <section id="recvView" class="view">
+    <button class="back" data-back>Back</button>
+    <h2>Enter the code</h2>
+    <input id="codeInput" inputmode="numeric" maxlength="6" placeholder="000000" autocomplete="off">
+    <p id="recvError" class="error"></p>
+    <button id="btnJoin" class="big primary center"><b>Connect</b></button>
+    <p class="note">Or scan the sender’s QR code with your camera.</p>
+  </section>
+
+  <section id="xferView" class="view">
+    <button class="back" data-back>Disconnect</button>
+    <div id="chip" class="chip">Connecting…</div>
+    <button id="btnPick" class="big primary center" disabled><b>Choose files</b><span>Photos, videos, APKs, ZIPs, anything</span></button>
+    <ul id="list"></ul>
+  </section>
+</main>
+<input type="file" id="picker" multiple hidden>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
