@@ -14,6 +14,22 @@ let nextId = 1, sending = false;
 const queue = [];
 const incoming = new Map();
 
+// ---------- debug log (shown at the bottom of the page) ----------
+function log(t) {
+  let el = $("dbg");
+  if (!el) {
+    el = document.createElement("pre"); el.id = "dbg";
+    el.style.cssText = "font:11px/1.4 monospace;white-space:pre-wrap;color:#5B6B80;margin:20px 0 0;padding:10px;border:1px dashed #DCE3EC;border-radius:10px";
+    $("app").appendChild(el);
+  }
+  el.textContent += t + "\n";
+}
+function cands(sdp) {
+  const t = (sdp && sdp.sdp) || "";
+  const n = (r) => (t.match(r) || []).length;
+  return `host:${n(/typ host/g)} srflx:${n(/typ srflx/g)} relay:${n(/typ relay/g)} mdns:${n(/\.local/g)}`;
+}
+
 // ---------- helpers ----------
 function show(id) {
   document.querySelectorAll(".view").forEach((v) => v.classList.toggle("active", v.id === id));
@@ -51,7 +67,8 @@ function reset() {
 function openSignal(code, r) {
   return new Promise((resolve, reject) => {
     ws = new WebSocket(`${SIGNAL}?room=${code}&role=${r}`);
-    ws.onopen = resolve;
+    ws.onopen = () => { log("signal open (" + r + ")"); resolve(); };
+    ws.onclose = (e) => log("signal closed " + e.code);
     ws.onerror = () => reject(new Error(r === "guest" ? "Code not found. Check it and try again." : "Could not reach the server."));
     ws.onmessage = onSignal;
   });
@@ -59,6 +76,7 @@ function openSignal(code, r) {
 
 async function onSignal(e) {
   const m = JSON.parse(e.data);
+  log("signal msg: " + m.type + (m.sdp ? " " + m.sdp.type + " [" + cands(m.sdp) + "]" : ""));
   if (m.type === "peer-joined" && role === "host") {
     $("sendStatus").textContent = "Connecting…";
     armTimer();
@@ -94,6 +112,8 @@ function gathered() {
 function makePC() {
   pc = new RTCPeerConnection(ICE);
   pc.ondatachannel = (e) => setupChannel(e.channel);
+  pc.oniceconnectionstatechange = () => log("ice: " + pc.iceConnectionState);
+  pc.onicegatheringstatechange = () => log("gathering: " + pc.iceGatheringState);
   pc.onconnectionstatechange = () => {
     if (pc.connectionState === "failed") chip("Connection failed", "bad");
   };
@@ -104,6 +124,7 @@ async function startHost() {
   setupChannel(pc.createDataChannel("fling"));
   await pc.setLocalDescription();
   await gathered(); // all candidates in one message, so signaling stays tiny
+  log("sending offer [" + cands(pc.localDescription) + "]");
   ws.send(JSON.stringify({ type: "sdp", sdp: pc.localDescription }));
 }
 
@@ -120,6 +141,7 @@ function setupChannel(ch) {
   dc.binaryType = "arraybuffer";
   dc.bufferedAmountLowThreshold = LOW;
   dc.onopen = () => {
+    log("datachannel open");
     clearTimeout(connTimer);
     try { ws && ws.close(); } catch {} // signaling is no longer needed
     show("xferView");
