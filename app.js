@@ -1,5 +1,5 @@
 // ====== CONFIG: put your Worker URL here (keep the /ws at the end) ======
-const SIGNAL = "wss://flingshare-signal.YOUR-NAME.workers.dev/ws";
+const SIGNAL = "wss://flingshare-worker.text-me-md-alamin.workers.dev/ws";
 // =========================================================================
 
 const CHUNK = 60 * 1024;      // payload per DataChannel message (+4 byte header)
