@@ -1,0 +1,10 @@
+{
+  "name": "FlingShare",
+  "short_name": "FlingShare",
+  "description": "Send files straight to another device. No upload, no account.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#F3F6FA",
+  "theme_color": "#2547F5",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}
